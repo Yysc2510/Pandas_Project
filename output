@@ -1,15 +1,3 @@
-使用的 Pandas 和 sklearn 内容：
-DataFrame：将用户输入的数据转换为DataFrame。
-concat：将编码后的数据和原始DataFrame合并。
-drop：删除分类特征列。
-OneHotEncoder.transform：对输入数据进行独热编码。
-StandardScaler.transform：标准化数值特征。
-model.predict：使用训练好的线性回归模型预测房价。
-
-代码功能: 编写一个函数，根据用户输入的特征，预测房屋价格。
-
-代码：
-
 def predict_price(input_data):
     # 编码和标准化输入数据
     input_df = pd.DataFrame([input_data])
