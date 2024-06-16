@@ -1,18 +1,35 @@
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.linear_model import LinearRegression
+# 分类特征和数值特征列表
+categorical_features = ['Direction', 'District', 'Elevator', 'Layout', 'Region', 'Renovation']
+num_features = ['Size', 'Year']
+# 加载或定义训练好的模型、编码器和标准化器
+# encoder = OneHotEncoder()  # 已训练好的编码器
+# scaler = StandardScaler()  # 已训练好的标准化器
+# model = LinearRegression()  # 已训练好的线性回归模型
+
 def predict_price(input_data):
-    # 编码和标准化输入数据
+    # 将用户输入的数据转换为DataFrame
     input_df = pd.DataFrame([input_data])
+
+    # 对分类特征进行独热编码
     encoded_input = encoder.transform(input_df[categorical_features])
     encoded_input_df = pd.DataFrame(encoded_input, columns=encoder.get_feature_names_out())
+
+    # 合并编码后的数据和原始DataFrame
     input_df = pd.concat([input_df.reset_index(drop=True), encoded_input_df], axis=1)
+
+    # 删除原始的分类特征列
     input_df.drop(columns=categorical_features, inplace=True)
 
     # 标准化数值特征
     input_df[num_features] = scaler.transform(input_df[num_features])
 
-    # 预测
+    # 使用训练好的模型预测房价
     return model.predict(input_df)[0]
 
-# 用户输入数据进行预测
+# 示例用户输入数据
 input_data = {
     'Direction': '南北',
     'District': '东单',
@@ -25,5 +42,6 @@ input_data = {
     'Year': 1988
 }
 
+# 进行预测
 predicted_price = predict_price(input_data)
 print(f"The predicted price for the input data is: {predicted_price}")
