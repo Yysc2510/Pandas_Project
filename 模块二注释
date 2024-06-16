@@ -1,0 +1,79 @@
+模块2：数据分析
+1. 描述性统计分析扩展
+除了基本的描述性统计信息，计算各特征与目标变量的相关系数，以评估特征与房价的相关性。
+# 计算相关系数
+correlation = data_encoded.corr()
+print(correlation["Price"].sort_values(ascending=False))
+2. 特征的统计检验
+对分类特征进行ANOVA检验，以确定不同类别对房价是否有显著影响。
+from scipy import stats
+
+# 示例：对'Region'特征进行ANOVA检验
+fvalue, pvalue = stats.f_oneway(data[data['Region'] == 'Region1']['Price'],
+                                data[data['Region'] == 'Region2']['Price'])
+print("F-value:", fvalue)
+print("P-value:", pvalue)
+3. 特征工程
+创建新特征，例如从'Size'和'Floor'生成'Living Space per Floor'。
+data_encoded['Living_Space_per_Floor'] = data_encoded['Size'] / data_encoded['Floor']
+4. 异常值检测与处理
+使用基于IQR的方法来识别异常值，并决定是删除还是替换它们。
+Q1 = data_encoded['Price'].quantile(0.25)
+Q3 = data_encoded['Price'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# 标记异常值
+data_encoded['Price_Outlier'] = (data_encoded['Price'] < lower_bound) | (data_encoded['Price'] > upper_bound)
+5. 数据转换
+对偏斜的特征进行对数转换，以稳定方差。
+# 对数转换
+data_encoded['Price_Log'] = np.log1p(data_encoded['Price'])
+6. 特征选择
+使用基于模型的特征选择方法，如基于树模型的特征重要性。
+from sklearn.ensemble import RandomForestRegressor
+
+# 特征重要性
+model = RandomForestRegressor()
+model.fit(X, y)
+importances = model.feature_importances_
+indices = np.argsort(importances)[::-1]
+
+# 打印前几个最重要的特征
+for f in range(5):
+    print(f"{X.columns[indices[f]]}: {importances[indices[f]]}")
+7. 聚类分析
+使用K-means聚类来探索数据中的自然分组。
+from sklearn.cluster import KMeans
+
+# 聚类分析
+kmeans = KMeans(n_clusters=3)
+clusters = kmeans.fit_predict(data_encoded[num_features])
+
+# 查看聚类结果
+print(clusters)
+8. 残差分析
+在初步模型建立后，进行残差分析以检查模型的假设。
+residuals = y_test - y_pred
+
+# 残差直方图
+plt.hist(residuals, bins=30, alpha=0.7)
+plt.title('Residuals Distribution')
+plt.show()
+9. 时间序列分析
+如果数据集中包含时间信息，进行时间序列分析。
+# 假设'Date'是时间序列特征
+data_encoded['Date'] = pd.to_datetime(data_encoded['Date'])
+data_encoded['Year'] = data_encoded['Date'].dt.year
+data_encoded['Month'] = data_encoded['Date'].dt.month
+
+# 时间序列分析示例：按年份分组的平均价格
+yearly_avg_price = data_encoded.groupby('Year')['Price'].mean().reset_index()
+print(yearly_avg_price)
+10. 数据平衡
+如果某些类别特征的样本数量不平衡，使用SMOTE或其他方法进行重采样。
+from imblearn.over_sampling import SMOTE
+
+# 假设'Region'是不平衡的类别特征
+X_res, y_res = SMOTE().fit_resample(X_encoded, y)
