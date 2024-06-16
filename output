@@ -1,0 +1,41 @@
+使用的 Pandas 和 sklearn 内容：
+DataFrame：将用户输入的数据转换为DataFrame。
+concat：将编码后的数据和原始DataFrame合并。
+drop：删除分类特征列。
+OneHotEncoder.transform：对输入数据进行独热编码。
+StandardScaler.transform：标准化数值特征。
+model.predict：使用训练好的线性回归模型预测房价。
+
+代码功能: 编写一个函数，根据用户输入的特征，预测房屋价格。
+
+代码：
+
+def predict_price(input_data):
+    # 编码和标准化输入数据
+    input_df = pd.DataFrame([input_data])
+    encoded_input = encoder.transform(input_df[categorical_features])
+    encoded_input_df = pd.DataFrame(encoded_input, columns=encoder.get_feature_names_out())
+    input_df = pd.concat([input_df.reset_index(drop=True), encoded_input_df], axis=1)
+    input_df.drop(columns=categorical_features, inplace=True)
+
+    # 标准化数值特征
+    input_df[num_features] = scaler.transform(input_df[num_features])
+
+    # 预测
+    return model.predict(input_df)[0]
+
+# 用户输入数据进行预测
+input_data = {
+    'Direction': '南北',
+    'District': '东单',
+    'Elevator': '无电梯',
+    'Floor': '6',
+    'Layout': '2室1厅',
+    'Region': '东城',
+    'Renovation': '精装',
+    'Size': 60,
+    'Year': 1988
+}
+
+predicted_price = predict_price(input_data)
+print(f"The predicted price for the input data is: {predicted_price}")
