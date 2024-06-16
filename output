@@ -43,170 +43,131 @@ input_data = {
 }
 
 
-数据导出模块常用方法
+                                                              五个方法
+1. pivot_table：透视表操作
+方法： 使用pivot_table方法可以根据一个或多个键对数据进行透视，类似于Excel中的透视表功能。
 
-
-                                                                   1. to_csv：导出为CSV文件
-
-
+示例代码： 创建一个透视表，计算不同产品在不同月份的销售额。
 import pandas as pd
 
 # 创建一个DataFrame
 data = {
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [25, 30, 35],
-    'City': ['New York', 'Los Angeles', 'Chicago']
+    'Month': ['Jan', 'Jan', 'Feb', 'Feb', 'Jan', 'Feb'],
+    'Product': ['A', 'B', 'A', 'B', 'A', 'B'],
+    'Sales': [100, 200, 150, 250, 120, 220]
 }
 df = pd.DataFrame(data)
 
-# 导出为CSV文件
-df.to_csv('output.csv', index=False)
+# 创建透视表
+pivot_df = df.pivot_table(index='Month', columns='Product', values='Sales', aggfunc='sum')
+print(pivot_df)
+输出
+Product    A    B
+Month            
+Feb      150  250
+Jan      220  200
+2. cut：数据分箱操作
+方法： 使用cut方法将连续的数值数据分成离散的区间（箱子）。
 
-predicted_price = predict_price(input_data)
-print(f"The predicted price for the input data is: {predicted_price}")
-
-举例：
-# Test Case 1: Basic CSV export
-df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-df1.to_csv('output1.csv', index=False)
-
-# Test Case 2: Export with index
-df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
-df2.to_csv('output2.csv', index=True)
-
-# Test Case 3: Export with a different delimiter
-df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
-df3.to_csv('output3.csv', sep=';', index=False)
-
-
-                                                            2. to_excel：导出为Excel文件
-
+示例代码： 对一个数据列进行分箱操作，并计算每个箱子中的数据数量。
 import pandas as pd
 
 # 创建一个DataFrame
 data = {
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [25, 30, 35],
-    'City': ['New York', 'Los Angeles', 'Chicago']
+    'Value': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 }
 df = pd.DataFrame(data)
 
-# 导出为Excel文件
-df.to_excel('output.xlsx', index=False)
+# 数据分箱
+bins = [0, 30, 60, 100]
+labels = ['Low', 'Medium', 'High']
+df['Bins'] = pd.cut(df['Value'], bins=bins, labels=labels, right=True)
 
-举例：
-# Test Case 1: Basic Excel export
-df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-df1.to_excel('output1.xlsx', index=False)
+# 计算每个箱子中的数据数量
+bin_counts = df['Bins'].value_counts()
+print(bin_counts)
+输出
+Low       3
+Medium    4
+High      3
+Name: Bins, dtype: int64
 
-# Test Case 2: Export with index
-df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
-df2.to_excel('output2.xlsx', index=True)
+3. applymap：应用函数到数据框的每个元素
+方法： 使用applymap方法将函数应用到数据框的每个元素。
 
-# Test Case 3: Export to a specific sheet
-df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
-df3.to_excel('output3.xlsx', sheet_name='Sheet1', index=False)
-
-
-                                                             3. to_json：导出为JSON文件
-
+示例代码： 将一个数据框中的所有元素转换为小写。
 import pandas as pd
 
 # 创建一个DataFrame
 data = {
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [25, 30, 35],
-    'City': ['New York', 'Los Angeles', 'Chicago']
+    'A': ['Apple', 'Banana', 'Orange'],
+    'B': ['Cat', 'Dog', 'Elephant']
 }
 df = pd.DataFrame(data)
 
-# 导出为JSON文件
-df.to_json('output.json', orient='records')
+# 应用函数到每个元素
+df_lower = df.applymap(lambda x: x.lower())
+print(df_lower)
+输出
+        A         B
+0   apple       cat
+1  banana       dog
+2  orange  elephant
+4. pd.to_datetime：日期时间转换
+方法： 使用pd.to_datetime方法将字符串或数值转换为日期时间格式。
 
-举例：
-
-
-# Test Case 1: Basic JSON export
-df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-df1.to_json('output1.json', orient='records')
-
-# Test Case 2: Export with different orientation
-df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
-df2.to_json('output2.json', orient='split')
-
-# Test Case 3: Export with index
-df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
-df3.to_json('output3.json', orient='index')
-
-
-
-                                                            4. to_sql：导出到SQL数据库
-
-
-import pandas as pd
-from sqlalchemy import create_engine
-
-# 创建一个DataFrame
-data = {
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [25, 30, 35],
-    'City': ['New York', 'Los Angeles', 'Chicago']
-}
-df = pd.DataFrame(data)
-
-# 创建数据库连接
-engine = create_engine('sqlite:///example.db')
-
-# 导出到SQL数据库
-df.to_sql('users', con=engine, if_exists='replace', index=False)
-
-
-
-举例：
-
-
-
-
-# Test Case 1: Basic SQL export
-df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-df1.to_sql('table1', con=engine, if_exists='replace', index=False)
-
-# Test Case 2: Export with index
-df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
-df2.to_sql('table2', con=engine, if_exists='replace', index=True)
-
-# Test Case 3: Append data to an existing table
-df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
-df3.to_sql('table1', con=engine, if_exists='append', index=False)
-                                                          5. to_dict：导出为字典
-
-
-
+示例代码： 将一个包含日期字符串的列转换为日期时间格式，并提取出年份。
 import pandas as pd
 
 # 创建一个DataFrame
 data = {
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [25, 30, 35],
-    'City': ['New York', 'Los Angeles', 'Chicago']
+    'A': ['Apple', 'Banana', 'Orange'],
+    'B': ['Cat', 'Dog', 'Elephant']
 }
 df = pd.DataFrame(data)
 
-# 导出为字典
-data_dict = df.to_dict(orient='records')
-print(data_dict)
+# 使用DataFrame.apply和Series.map来转换为小写
+df_lower = df.apply(lambda x: x.map(lambda y: y.lower() if isinstance(y, str) else y))
+print(df_lower)
+输出
+        Date  Year
+0 2023-01-01  2023
+1 2024-02-15  2024
+2 2025-03-30  2025
+5. stack 和 unstack：数据堆叠与解堆操作
+方法： 使用stack方法将数据框的列“堆叠”为多层索引的行，使用unstack方法将多层索引的行“解堆”为列。
 
+示例代码： 创建一个多层索引的数据框，并进行堆叠与解堆操作。
+import pandas as pd
 
+# 创建一个DataFrame
+data = {
+    'A': [1, 2, 3],
+    'B': [4, 5, 6],
+    'C': [7, 8, 9]
+}
+df = pd.DataFrame(data, index=['X', 'Y', 'Z'])
 
-举例：
-# Test Case 1: Basic dict export
-df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-dict1 = df1.to_dict(orient='records')
+# 将列堆叠为多层索引的行
+stacked_df = df.stack()
+print(stacked_df)
 
-# Test Case 2: Export with different orientation
-df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
-dict2 = df2.to_dict(orient='list')
+# 解堆多层索引的行为列
+unstacked_df = stacked_df.unstack()
+print(unstacked_df)
+输出
+X  A    1
+   B    4
+   C    7
+Y  A    2
+   B    5
+   C    8
+Z  A    3
+   B    6
+   C    9
+dtype: int64
 
-# Test Case 3: Export with index
-df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
-dict3 = df3.to_dict(orient='index')
+   A  B  C
+X  1  4  7
+Y  2  5  8
+Z  3  6  9
