@@ -42,6 +42,171 @@ input_data = {
     'Year': 1988
 }
 
-# 进行预测
+
+数据导出模块常用方法
+
+
+                                                                   1. to_csv：导出为CSV文件
+
+
+import pandas as pd
+
+# 创建一个DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago']
+}
+df = pd.DataFrame(data)
+
+# 导出为CSV文件
+df.to_csv('output.csv', index=False)
+
 predicted_price = predict_price(input_data)
 print(f"The predicted price for the input data is: {predicted_price}")
+
+举例：
+# Test Case 1: Basic CSV export
+df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+df1.to_csv('output1.csv', index=False)
+
+# Test Case 2: Export with index
+df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+df2.to_csv('output2.csv', index=True)
+
+# Test Case 3: Export with a different delimiter
+df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
+df3.to_csv('output3.csv', sep=';', index=False)
+
+
+                                                            2. to_excel：导出为Excel文件
+
+import pandas as pd
+
+# 创建一个DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago']
+}
+df = pd.DataFrame(data)
+
+# 导出为Excel文件
+df.to_excel('output.xlsx', index=False)
+
+举例：
+# Test Case 1: Basic Excel export
+df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+df1.to_excel('output1.xlsx', index=False)
+
+# Test Case 2: Export with index
+df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+df2.to_excel('output2.xlsx', index=True)
+
+# Test Case 3: Export to a specific sheet
+df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
+df3.to_excel('output3.xlsx', sheet_name='Sheet1', index=False)
+
+
+                                                             3. to_json：导出为JSON文件
+
+import pandas as pd
+
+# 创建一个DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago']
+}
+df = pd.DataFrame(data)
+
+# 导出为JSON文件
+df.to_json('output.json', orient='records')
+
+举例：
+
+
+# Test Case 1: Basic JSON export
+df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+df1.to_json('output1.json', orient='records')
+
+# Test Case 2: Export with different orientation
+df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+df2.to_json('output2.json', orient='split')
+
+# Test Case 3: Export with index
+df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
+df3.to_json('output3.json', orient='index')
+
+
+
+                                                            4. to_sql：导出到SQL数据库
+
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+# 创建一个DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago']
+}
+df = pd.DataFrame(data)
+
+# 创建数据库连接
+engine = create_engine('sqlite:///example.db')
+
+# 导出到SQL数据库
+df.to_sql('users', con=engine, if_exists='replace', index=False)
+
+
+
+举例：
+
+
+
+
+# Test Case 1: Basic SQL export
+df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+df1.to_sql('table1', con=engine, if_exists='replace', index=False)
+
+# Test Case 2: Export with index
+df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+df2.to_sql('table2', con=engine, if_exists='replace', index=True)
+
+# Test Case 3: Append data to an existing table
+df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
+df3.to_sql('table1', con=engine, if_exists='append', index=False)
+                                                          5. to_dict：导出为字典
+
+
+
+import pandas as pd
+
+# 创建一个DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago']
+}
+df = pd.DataFrame(data)
+
+# 导出为字典
+data_dict = df.to_dict(orient='records')
+print(data_dict)
+
+
+
+举例：
+# Test Case 1: Basic dict export
+df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+dict1 = df1.to_dict(orient='records')
+
+# Test Case 2: Export with different orientation
+df2 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+dict2 = df2.to_dict(orient='list')
+
+# Test Case 3: Export with index
+df3 = pd.DataFrame({'A': [10, 20, 30], 'B': [40, 50, 60]})
+dict3 = df3.to_dict(orient='index')
